@@ -45,7 +45,7 @@
 
 Name:           jakarta-commons-dbcp
 Version:        1.2.1
-Release:        %mkrel 10.1.1
+Release:        %mkrel 10.1.2
 Epoch:          0
 Summary:        Jakarta Commons DataBase Pooling Package
 License:        Apache Software License 
@@ -110,8 +110,6 @@ Obsoletes:  %{short_name} < %{epoch}:%{version}-%{release}
 
 %if %{gcj_support}
 BuildRequires:          java-gcj-compat-devel
-Requires(post):         java-gcj-compat
-Requires(postun):       java-gcj-compat
 %endif
 
 %description
@@ -143,10 +141,6 @@ Javadoc for %{name}.
 Summary:        DBCP dependency for Tomcat5
 Group:          Development/Java
 
-%if %{gcj_support}
-Requires(post):         java-gcj-compat
-Requires(postun):       java-gcj-compat
-%endif
 
 %description tomcat5
 DBCP dependency for Tomcat5
