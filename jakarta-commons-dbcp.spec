@@ -44,8 +44,8 @@
 %define section         free
 
 Name:           jakarta-commons-dbcp
-Version:        1.2.1
-Release:        %mkrel 10.1.2
+Version:        1.2.2
+Release:        %mkrel 1.0.1
 Epoch:          0
 Summary:        Jakarta Commons DataBase Pooling Package
 License:        Apache Software License 
@@ -59,40 +59,39 @@ Source5:        commons-build.tar.gz
 # svn export -r '{2007-02-15}' http://svn.apache.org/repos/asf/jakarta/commons/proper/commons-build/trunk/ commons-build
 # tar czf commons-build.tar.gz commons-build
 Source6:        dbcp-tomcat5-build.xml
+Source7:        commons-dbcp-1.2.2.pom
 
-Patch0:         commons-dbcp-1.2.1-project_xml.patch
-Patch1:         commons-dbcp-1.2.1-TestJOCLed.patch
-Patch2:         commons-dbcp-1.2.1-TestConnectionPool.patch
-Patch3:         commons-dbcp-1.2.1-navigation_xml.patch
-Patch4:         commons-dbcp-1.2.1-project_properties.patch
+Patch0:         commons-dbcp-1.2.2-project_xml.patch
 
 Url:            http://jakarta.apache.org/commons/%{base_name}
 BuildRequires:  ant
 BuildRequires:  jakarta-commons-collections >= 2.0
-BuildRequires:  jakarta-commons-pool >= 1.1
+BuildRequires:  jakarta-commons-pool >= 1.3
+BuildRequires:  jakarta-commons-logging >= 1.1
 BuildRequires:  jdbc-stdext >= 2.0
 BuildRequires:  xerces-j2
 BuildRequires:  xml-commons-apis >= 0:1.3
-BuildRequires:  jpackage-utils > 1.6
-BuildRequires:  junit >= 3.8
+BuildRequires:  jpackage-utils > 1.7.2
+BuildRequires:  junit >= 3.8.1
 BuildRequires:  jakarta-commons-pool-tomcat5
 BuildRequires:  jakarta-commons-collections-tomcat5
+BuildRequires:  tomcat5-common-lib
 %if %{with_maven}
 BuildRequires:  maven >= 0:1.1
 BuildRequires:  maven-plugins-base
-BuildRequires:  maven-plugin-test
+BuildRequires:  maven-plugin-artifact
+BuildRequires:  maven-plugin-checkstyle
+BuildRequires:  sf-cobertura-maven-plugin
+BuildRequires:  sf-findbugs-maven-plugin
+BuildRequires:  maven-plugin-pmd
 BuildRequires:  maven-plugin-xdoc
+BuildRequires:  maven-plugin-test
 BuildRequires:  maven-plugin-license
 BuildRequires:  maven-plugin-changes
-BuildRequires:  maven-plugin-jdepend
-BuildRequires:  maven-plugin-jdiff
-BuildRequires:  maven-plugin-jxr
-BuildRequires:  maven-plugin-tasklist
-BuildRequires:  maven-plugin-developer-activity
-BuildRequires:  maven-plugin-file-activity
 BuildRequires:  saxon
 BuildRequires:  saxon-scripts
 %endif
+
 
 Requires:       update-alternatives
 Requires(post): update-alternatives
@@ -155,17 +154,8 @@ Group:          Development/Java
 %endif
 
 %prep
-cat <<EOT
 
-                If you dont want to build with maven,
-                give rpmbuild option '--without maven'
-
-EOT
-
-%setup -q -n %{short_name}-%{version}
-%{__sed} -i 's/\r//' LICENSE.txt
-%{__sed} -i 's/\r//' NOTICE.txt
-%{__sed} -i 's/\r//' README.txt
+%setup -q -n %{short_name}-%{version}-src
 # quick hack
 cp LICENSE.txt ../LICENSE
 # remove all binary libs
@@ -174,10 +164,6 @@ gzip -dc %{SOURCE5} | tar xf -
 cp %{SOURCE6} .
 
 %patch0 -b .sav
-%patch1 -b .sav
-%patch2 -b .sav
-%patch3 -b .sav
-%patch4 -b .sav
 
 %build
 %if %{with_maven}
@@ -212,12 +198,14 @@ maven \
 
 export CLASSPATH=$(build-classpath jdbc-stdext xerces-j2)
 %ant \
-        -Dbuild.sysclasspath=first \
         -Dcommons-pool.jar=$(build-classpath commons-pool) \
-        -Dcommons-collections.jar=$(build-classpath commons-collections) \
+        -Djdbc20ext.jar=$(build-classpath jdbc-stdext) \
         -Djunit.jar=$(build-classpath junit) \
-        -Djndi.jar=$(build-classpath jndi) \
-        -Dsax2.jar=$(build-classpath xml-commons-apis) \
+        -Dxerces.jar=$(build-classpath xerces-j2) \
+        -Dxml-apis.jar=$(build-classpath xml-commons-jaxp-1.3-apis) \
+        -Dnaming-common.jar=$(build-classpath tomcat5/naming-resources) \
+        -Dnaming-java.jar=$(build-classpath tomcat5/naming-factory) \
+        -Dlogging.jar=$(build-classpath commons-logging) \
         -Djava.io.tmpdir=. \
         dist test
 %endif
@@ -239,6 +227,14 @@ install -m 644 dbcp-tomcat5/%{short_name}-tomcat5.jar $RPM_BUILD_ROOT%{_javadir}
 
 (cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|jakarta-||g"`; done)
 (cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
+
+%add_to_maven_depmap commons-dbcp commons-dbcp %{version} JPP %{name}
+
+# pom
+install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
+install -pm 644 %{SOURCE7} \
+    $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP-%{name}.pom
+
 
 # javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
@@ -273,13 +269,15 @@ rm -rf $RPM_BUILD_ROOT
 %post
 update-alternatives --install %{_javadir}/hibernate_jdbc_cache.jar \
   hibernate_jdbc_cache %{_javadir}/%{name}.jar 60
-
+%update_maven_depmap
 %if %{gcj_support}
 %{update_gcjdb}
 %endif
 
-%if %{gcj_support}
+
 %postun
+%update_maven_depmap
+%if %{gcj_support}
 %{clean_gcjdb}
 %endif
 # (anssi) cleaned up a bit:
@@ -305,7 +303,8 @@ fi
 %{_javadir}/%{short_name}.jar
 %{_javadir}/%{short_name}-%{version}.jar
 %ghost %{_javadir}/hibernate_jdbc_cache.jar
-
+%{_datadir}/maven2/poms/*
+%{_mavendepmapfragdir}
 %if %{gcj_support}
 # (anssi) own the directory:
 %dir %{_libdir}/gcj/%{name}
