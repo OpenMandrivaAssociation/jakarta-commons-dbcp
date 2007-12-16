@@ -45,7 +45,7 @@
 
 Name:           jakarta-commons-dbcp
 Version:        1.2.2
-Release:        %mkrel 1.0.1
+Release:        %mkrel 1.0.2
 Epoch:          0
 Summary:        Jakarta Commons DataBase Pooling Package
 License:        Apache Software License 
@@ -71,7 +71,7 @@ BuildRequires:  jakarta-commons-logging >= 1.1
 BuildRequires:  jdbc-stdext >= 2.0
 BuildRequires:  xerces-j2
 BuildRequires:  xml-commons-apis >= 0:1.3
-BuildRequires:  jpackage-utils > 1.7.2
+BuildRequires:  java-rpmbuild > 1.7.2
 BuildRequires:  junit >= 3.8.1
 BuildRequires:  jakarta-commons-pool-tomcat5
 BuildRequires:  jakarta-commons-collections-tomcat5
