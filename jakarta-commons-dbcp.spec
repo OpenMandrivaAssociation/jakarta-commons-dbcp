@@ -102,7 +102,6 @@ Requires:       jakarta-commons-pool >= 1.1
 BuildArch:      noarch
 %endif
 
-BuildRoot:  %{_tmppath}/%{name}-buildroot
 Provides:   %{short_name} = %{epoch}:%{version}-%{release}
 Provides:   hibernate_jdbc_cache = %{epoch}:%{version}-%{release}
 Obsoletes:  %{short_name} < %{epoch}:%{version}-%{release}
