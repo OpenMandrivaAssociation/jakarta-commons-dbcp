@@ -45,7 +45,7 @@
 
 Name:           jakarta-commons-dbcp
 Version:        1.2.2
-Release:        %mkrel 1.0.2
+Release:        %mkrel 2
 Epoch:          0
 Summary:        Jakarta Commons DataBase Pooling Package
 License:        Apache Software License 
