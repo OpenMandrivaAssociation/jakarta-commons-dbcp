@@ -1,0 +1,9 @@
+sources:
+  "commons-build.tar.gz:"	a66dba4b254b55eb7d29c40af3b925f907b092bf
+  "commons-dbcp-1.2.2.pom:"	4064991f05e309cfa224ad739c76e7c95d44364d
+  "commons-dbcp-1.2.2-src.tar.gz:"	34ce36c8bb2f0e125e668066ae938bf9391e88b9
+  "dbcp-1.2.2-jpp-depmap.xml:"	90c8c5122fc25093b1da99b2a1d1065c6ee6a4e2
+  "dbcp-tomcat5-build.xml:"	aed89ecc442d11e593f766a04b770864ea682a97
+  "pom-maven2jpp-depcat.xsl:"	5861cae5f65e559ece90a7342d182f5a534b65de
+  "pom-maven2jpp-mapdeps.xsl:"	81e46abb70b7ed6c5afe8311c655edea70aa8aa8
+  "pom-maven2jpp-newdepmap.xsl:"	834413ffc7f650705ce65ca2c89100153142cd92

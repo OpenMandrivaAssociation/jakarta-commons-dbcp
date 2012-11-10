@@ -1,0 +1,8 @@
+commons-build.tar.gz
+commons-dbcp-1.2.2.pom
+commons-dbcp-1.2.2-src.tar.gz
+dbcp-1.2.2-jpp-depmap.xml
+dbcp-tomcat5-build.xml
+pom-maven2jpp-depcat.xsl
+pom-maven2jpp-mapdeps.xsl
+pom-maven2jpp-newdepmap.xsl
