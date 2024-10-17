@@ -64,7 +64,7 @@ Source7:        commons-dbcp-1.2.2.pom
 
 Patch0:         commons-dbcp-1.2.2-project_xml.patch
 
-Url:            http://jakarta.apache.org/commons/%{base_name}
+Url:            https://jakarta.apache.org/commons/%{base_name}
 BuildRequires:  ant
 BuildRequires:  jakarta-commons-collections >= 2.0
 BuildRequires:  jakarta-commons-pool >= 1.3
